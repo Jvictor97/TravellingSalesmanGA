@@ -1,0 +1,4 @@
+outfile.txt
+*.csv
+Resultados/
+.vscode/
