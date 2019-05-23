@@ -3,9 +3,10 @@ from __future__ import division
 import numpy as np
 import math
 import random
+from matplotlib import pyplot as plt
 
 # Define o número de cidades
-numCidades = 200
+numCidades = 10
 
 # Define a matriz de distâncias
 matriz = np.zeros(shape=(numCidades, numCidades))
@@ -18,9 +19,12 @@ probabilidadeMutacao = 0.01
 
 
 def main():
-    mapa = np.loadtxt("MAPA200.txt")
+    mapa = np.loadtxt("MAPA10.txt")
     geracao = np.zeros(shape=(populacaoMaxima, numCidades), dtype=int)
     aptidoes = np.zeros(shape=(populacaoMaxima))
+
+    xMapa = mapa[:, 0]
+    yMapa = mapa[:, 1]
 
     # Cálculo da Matriz de Distâncias
     for iIdx, i in enumerate(mapa):
@@ -45,6 +49,22 @@ def main():
         # Avaliação do resultado da última geração
         if ultimaMenorDistancia < menorDistancia or menorDistancia == None:
             menorDistancia = ultimaMenorDistancia
+
+            caminho = np.zeros(shape=(numCidades + 1, 2))
+            for idx, cidade in enumerate(sobrevivente):
+                caminho[idx] = mapa[cidade]
+
+            caminho[idx + 1] = caminho[0]
+
+            xCaminho = caminho[:, 0]
+            yCaminho = caminho[:, 1]
+
+            plt.clf()
+            plt.title('Caixeiro Viajante')
+            plt.plot(xCaminho, yCaminho, color="g")
+            plt.scatter(xMapa, yMapa, color="r")
+            plt.pause(0.05)
+
             print('Menor Distancia: %f' % (menorDistancia))
             strike = 0
         else:
@@ -55,6 +75,7 @@ def main():
     print('Numero de Geracoes Ate o Melhor: %d' % (numGeracoes - 700))
     print('Individuos por Geracao: %d' % populacaoMaxima)
     print('Taxa de Mutacao: %.2f' % probabilidadeMutacao)
+    plt.show()
 
 
 def fitness(individuo):
@@ -188,14 +209,3 @@ def mutacao(geracao):
 
 if __name__ == "__main__":
     main()
-
-    # csv.register_dialect('myDialect',
-    # delimiter = '|',
-    # quoting=csv.QUOTE_NONE,
-    # skipinitialspace=True)
-
-    # with open('dob.csv', 'w') as f:
-    #     writer = csv.writer(f, dialect='myDialect')
-    #     for row in matriz:
-    #         writer.writerow(row)
-    # f.close()
